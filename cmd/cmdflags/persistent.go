@@ -13,6 +13,7 @@ import (
 	"net/http/cookiejar"
 	"net/url"
 	"os"
+	"runtime"
 	"strings"
 	"time"
 
@@ -89,6 +90,7 @@ func (p *Persistent) bind(name string, flags *pflag.FlagSet, preRunE func(cmd *c
 
 		stdr.SetVerbosity(p.Verbosity())
 		p.Logger = stdr.NewWithOptions(log.New(p.Stderr, "", log.LstdFlags), stdr.Options{}).WithName(name)
+		p.Logger.V(1).Info("runtime", "os", runtime.GOOS, "arch", runtime.GOARCH)
 		p.Logger.V(1).Info("version", "name", VersionName, "commit", VersionCommit, "built", VersionBuilt)
 
 		return nil

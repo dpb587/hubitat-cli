@@ -61,7 +61,7 @@ If Hubitat has HTTPS enabled, the CLI will reject any certificates your system d
 A minimal image is available for use from [Docker](https://www.docker.com/), [Kubernetes](https://kubernetes.io/), or any other container runtime.
 
 ```bash
-$ docker run ghcr.io/dpb587/hubitat-cli
+$ docker run ghcr.io/dpb587/hubitat-cli:v0
 ```
 
 ## License
