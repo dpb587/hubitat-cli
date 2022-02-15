@@ -56,12 +56,12 @@ If the CLI is erroring or not behaving as you expect, try enabling logging with 
 
 ### Advanced
 
-If Hubitat has HTTPS enabled, the CLI will reject any certificates your system does not already trust. To trust a custom CA, configure the CA certificate file path with the `--hub-ca-cert=` flag (or `HUBITAT_CA_CERT` environment variable). See the `--help` option for additional connection options and methods for disabling secure connections.
+If Hubitat has HTTPS enabled, the CLI will reject any certificates your system does not already trust. To trust a custom CA, configure the CA certificate file path with the `--hub-ca-path=` flag (or `HUBITAT_CA_PATH` environment variable). See the `--help` option for additional connection options and methods for disabling secure connections.
 
-A minimal image is available for use from [Docker](https://www.docker.com/), [Kubernetes](https://kubernetes.io/), or any other container runtime.
+A minimal image is available for use from [Docker](https://www.docker.com/), [Kubernetes](https://kubernetes.io/), or any other container runtime. To avoid potentially breaking changes, use a major version tag (e.g. `v0`) rather than the default `latest` tag.
 
 ```bash
-$ docker run ghcr.io/dpb587/hubitat-cli:v0
+$ docker run ghcr.io/dpb587/hubitat-cli
 ```
 
 ## License
