@@ -20,6 +20,10 @@ type BackupFile struct {
 func (c *Client) DownloadBackupFile(ctx context.Context, name string) (BackupFile, io.ReadCloser, error) {
 	c.log.V(2).Info("requesting backup file", "name", name)
 
+	if name == "" {
+		return BackupFile{}, nil, errors.New("missing backup file name")
+	}
+
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, fmt.Sprintf("/hub/backupDB?fileName=%s", url.QueryEscape(name)), nil)
 	if err != nil {
 		return BackupFile{}, nil, errors.Wrap(err, "creating request")
@@ -40,20 +44,16 @@ func (c *Client) DownloadBackupFile(ctx context.Context, name string) (BackupFil
 
 	if contentDisposition := res.Header.Get("content-disposition"); len(contentDisposition) > 0 {
 		_, contentDispositionParams, err := mime.ParseMediaType(contentDisposition)
-		if err != nil {
-			return BackupFile{}, nil, errors.Wrap(err, "parsing content-disposition")
+		if err == nil {
+			meta.Name = contentDispositionParams["filename"]
 		}
-
-		meta.Name = contentDispositionParams["filename"]
 	}
 
 	if contentLength := res.Header.Get("content-length"); len(contentLength) > 0 {
 		contentLength, err := strconv.Atoi(contentLength)
-		if err != nil {
-			return BackupFile{}, nil, errors.Wrap(err, "parsing content-length")
+		if err == nil {
+			meta.Size = contentLength
 		}
-
-		meta.Size = contentLength
 	}
 
 	c.log.V(1).Info("requested backup file", "name", name)

@@ -9,6 +9,8 @@ import (
 )
 
 func (c *Client) Reboot(ctx context.Context) error {
+	c.log.V(2).Info("requesting reboot")
+
 	req, err := http.NewRequestWithContext(ctx, http.MethodPost, "/hub/reboot", nil)
 	if err != nil {
 		return errors.Wrap(err, "creating request")
@@ -24,6 +26,8 @@ func (c *Client) Reboot(ctx context.Context) error {
 
 		return fmt.Errorf("unexpected response status code: %d", res.StatusCode)
 	}
+
+	c.log.V(1).Info("requested reboot")
 
 	return nil
 }

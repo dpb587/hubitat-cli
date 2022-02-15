@@ -2,7 +2,7 @@
 
 An unofficial CLI for some [Hubitat](https://hubitat.com/) commands.
 
-Hubitat doesn't really have a formal API, so this is a little hacky. It currently supports a few management commands that I rely on in automation (namely downloading backups and rotating HTTPS certificates). Use at your own risk.
+Hubitat doesn't really have a formal API so this is a little hacky and may break across platform updates. It currently supports a few management commands that I rely on in automation (namely downloading backups and rotating HTTPS certificates). Use at your own risk.
 
 ## Usage
 
@@ -22,7 +22,7 @@ $ hubitat-cli \
   ...
 ```
 
-Environment variables may be used for many of the global flags to help with automation or avoid lengthy commands.
+Environment variables may be used for many of the global flags to help with automation or avoid repetitive commands.
 
 ```bash
 $ export HUBITAT_URL=http://192.0.2.100

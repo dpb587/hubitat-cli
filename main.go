@@ -13,8 +13,10 @@ import (
 
 func main() {
 	var cmd = &cobra.Command{
-		Use:   "hubitat-cli",
-		Short: "For interacting with Hubitat",
+		Use:           "hubitat-cli",
+		Short:         "For interacting with Hubitat",
+		SilenceErrors: true,
+		SilenceUsage:  true,
 	}
 
 	cmdp := cmdflags.NewPersistent(cmd)
@@ -25,7 +27,7 @@ func main() {
 	cmd.AddCommand(rebootcmd.New(cmdp))
 
 	if err := cmd.Execute(); err != nil {
-		fmt.Println(err)
+		fmt.Printf("%s: error: %s\n", cmd.Use, err)
 		os.Exit(1)
 	}
 }

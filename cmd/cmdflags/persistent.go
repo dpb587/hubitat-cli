@@ -1,6 +1,7 @@
 package cmdflags
 
 import (
+	"context"
 	"crypto/tls"
 	"crypto/x509"
 	"fmt"
@@ -56,11 +57,11 @@ func NewPersistent(cmd *cobra.Command) *Persistent {
 func (p *Persistent) bind(name string, flags *pflag.FlagSet, preRunE func(cmd *cobra.Command, args []string) error) func(cmd *cobra.Command, args []string) error {
 	flags.IntVarP(&p.fVerbosity, "verbose", "v", 0, "verbosity level")
 
-	flags.StringVar(&p.fHubURL, "hub-url", "", "URL for accessing the hub (e.g. http://192.0.2.100)")
-	flags.StringVar(&p.fHubCAPath, "hub-ca-path", "", "custom certificate authorities to trust")
-	flags.BoolVar(&p.fHubInsecure, "hub-insecure", false, "disable TLS verifications")
-	flags.StringVar(&p.fHubUsername, "hub-username", "", "username for login")
-	flags.StringVar(&p.fHubPassword, "hub-password", "", "password for login")
+	flags.StringVar(&p.fHubURL, "hub-url", "", "URL for accessing the hub (e.g. http://192.0.2.100; $HUBITAT_URL)")
+	flags.StringVar(&p.fHubCAPath, "hub-ca-path", "", "custom certificate authorities to trust ($HUBITAT_CA_PATH)")
+	flags.BoolVar(&p.fHubInsecure, "hub-insecure", false, "disable TLS verifications ($HUBITAT_INSECURE)")
+	flags.StringVar(&p.fHubUsername, "hub-username", "", "username for login ($HUBITAT_USERNAME)")
+	flags.StringVar(&p.fHubPassword, "hub-password", "", "password for login ($HUBITAT_PASSWORD)")
 
 	return func(cmd *cobra.Command, args []string) error {
 		if preRunE != nil {
@@ -136,7 +137,7 @@ func (p *Persistent) HubClient() (*hub.Client, error) {
 		)
 
 		if len(p.fHubUsername) > 0 || len(p.fHubPassword) > 0 {
-			err := hubClient.Login(p.fHubUsername, p.fHubPassword)
+			err := hubClient.Login(context.TODO(), p.fHubUsername, p.fHubPassword)
 			if err != nil {
 				return nil, errors.Wrap(err, "logging in")
 			}
@@ -156,6 +157,8 @@ func (p *Persistent) TLSConfig() (*tls.Config, error) {
 		}
 
 		if p.fHubCAPath != "" {
+			rootCAs = x509.NewCertPool()
+
 			certs, err := ioutil.ReadFile(p.fHubCAPath)
 			if err != nil {
 				return nil, errors.Wrap(err, "reading custom ca certs")

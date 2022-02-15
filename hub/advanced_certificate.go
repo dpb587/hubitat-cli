@@ -11,6 +11,8 @@ import (
 )
 
 func (c *Client) UpdateAdvancedCertificates(ctx context.Context, certificate, privateKey []byte) error {
+	c.log.V(2).Info("requesting certificate update")
+
 	req, err := http.NewRequestWithContext(
 		ctx,
 		http.MethodPost,
@@ -30,13 +32,16 @@ func (c *Client) UpdateAdvancedCertificates(ctx context.Context, certificate, pr
 	res, err := c.Do(req)
 	if err != nil {
 		return errors.Wrap(err, "sending request")
-	} else if res.StatusCode != http.StatusOK {
-		if cerr := res.Body.Close(); cerr != nil {
-			c.log.Error(cerr, "closing errored response")
-		}
+	}
 
+	err = res.Body.Close()
+	if err != nil {
+		return errors.Wrap(err, "closing response body")
+	} else if res.StatusCode != http.StatusOK {
 		return fmt.Errorf("unexpected response status code: %d", res.StatusCode)
 	}
+
+	c.log.V(2).Info("requested certificate update")
 
 	return nil
 }
