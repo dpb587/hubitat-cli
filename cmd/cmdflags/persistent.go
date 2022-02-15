@@ -69,6 +69,23 @@ func (p *Persistent) bind(name string, flags *pflag.FlagSet, preRunE func(cmd *c
 			}
 		}
 
+		for k, ev := range map[string]string{
+			"hub-url":      "HUBITAT_URL",
+			"hub-ca-path":  "HUBITAT_CA_PATH",
+			"hub-insecure": "HUBITAT_INSECURE",
+			"hub-username": "HUBITAT_USERNAME",
+			"hub-password": "HUBITAT_PASSWORD",
+		} {
+			pf := flags.Lookup(k)
+			if pf.Changed {
+				continue
+			} else if v, ok := os.LookupEnv(ev); ok {
+				if err := pf.Value.Set(v); err != nil {
+					return errors.Wrapf(err, "setting %s from env", k)
+				}
+			}
+		}
+
 		stdr.SetVerbosity(p.Verbosity())
 		p.Logger = stdr.NewWithOptions(log.New(p.Stderr, "", log.LstdFlags), stdr.Options{}).WithName(name)
 		p.Logger.V(1).Info("version", "name", VersionName, "commit", VersionCommit, "built", VersionBuilt)
