@@ -59,3 +59,20 @@ build darwin arm64
 build linux amd64
 build linux arm64
 build windows amd64
+
+cd tmp/build
+
+echo 'build: checksums (sha256)'
+sha256sum * | tee ../build-checksums.txt
+
+cd ..
+(
+  if [ -e "../docs/releases/v${version}.md" ]; then
+    sed '1{/^---$/!q;};1,/^---$/d' "../docs/releases/v${version}.md" | sed -e '2,$b' -e '/^$/d'
+    echo
+  fi
+
+  echo "**Assets (sha256)**"
+  echo ""
+  sed 's/^/    /' build-checksums.txt
+) > build-notes.md
