@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"path/filepath"
+	"strings"
 
 	"github.com/dpb587/hubitat-cli/cmd/cmdflags"
 	"github.com/pkg/errors"
@@ -42,9 +44,11 @@ func NewDownloadCommand(cmdp *cmdflags.Persistent) *cobra.Command {
 
 			if len(localFile) == 0 {
 				localFile = meta.Name
+			} else if strings.HasSuffix(localFile, string(os.PathSeparator)) {
+				localFile = filepath.Join(localFile, meta.Name)
 			}
 
-			cmdp.Logger.V(2).Info("writing backup file", "name", localFile)
+			cmdp.Logger.V(2).Info("writing backup file", "path", localFile)
 
 			fh, err := os.OpenFile(localFile, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0600)
 			if err != nil {
@@ -58,7 +62,7 @@ func NewDownloadCommand(cmdp *cmdflags.Persistent) *cobra.Command {
 				return errors.Wrap(err, "downloading")
 			}
 
-			cmdp.Logger.V(1).Info("wrote backup file", "name", localFile)
+			cmdp.Logger.V(1).Info("wrote backup file", "path", localFile)
 
 			cmdp.Logger.V(0).Info(fmt.Sprintf("downloaded backup file to %s", localFile))
 
