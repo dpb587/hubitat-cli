@@ -19,6 +19,12 @@ func main() {
 		SilenceUsage:  true,
 	}
 
+	// simplify output; --help still exists, and unlikely to need completion
+	cmd.SetHelpCommand(&cobra.Command{Hidden: true})
+	cmd.CompletionOptions = cobra.CompletionOptions{
+		DisableDefaultCmd: true,
+	}
+
 	cmdp := cmdflags.NewPersistent(cmd)
 
 	cmd.AddCommand(advancedcmd.New(cmdp))
