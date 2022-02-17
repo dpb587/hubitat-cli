@@ -17,6 +17,7 @@ func main() {
 		Short:         "For interacting with Hubitat",
 		SilenceErrors: true,
 		SilenceUsage:  true,
+		Version:       fmt.Sprintf("%s (commit %s, built %s)", cmdflags.VersionName, cmdflags.VersionCommit, cmdflags.VersionBuilt),
 	}
 
 	// simplify output; --help still exists, and unlikely to need completion

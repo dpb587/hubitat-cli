@@ -98,7 +98,7 @@ func NewUpdateCommand(cmdp *cmdflags.Persistent) *cobra.Command {
 					cmdp.Logger.V(1).Info("compared certificates", "desired", desiredSerialNumber, "actual", actualSerialNumber)
 
 					if desiredSerialNumber == actualSerialNumber {
-						cmdp.Logger.V(0).Info("skipping update (certificate already in use)", "sn", actualSerialNumber)
+						cmdp.Logger.V(0).Info("skipping update (certificate already in use)", "serial", actualSerialNumber)
 
 						return nil
 					}

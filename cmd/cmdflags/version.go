@@ -1,5 +1,3 @@
 package cmdflags
 
-import "time"
-
-var VersionName, VersionCommit, VersionBuilt = "0.0.0", "0000000000", time.Now().In(time.UTC).Format(time.RFC3339)
+var VersionName, VersionCommit, VersionBuilt = "0.0.0", "0000000000", "0000-00-00T00:00:00Z"
