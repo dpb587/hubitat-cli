@@ -1,6 +1,8 @@
-package rebootcmd
+package hubidcmd
 
 import (
+	"fmt"
+
 	"github.com/dpb587/hubitat-cli/cmd/cmdflags"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
@@ -8,8 +10,8 @@ import (
 
 func New(cmdp *cmdflags.Persistent) *cobra.Command {
 	var cmd = &cobra.Command{
-		Use:   "reboot",
-		Short: "For rebooting the hub",
+		Use:   "hub-id",
+		Short: "For getting the hub ID",
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
@@ -19,12 +21,12 @@ func New(cmdp *cmdflags.Persistent) *cobra.Command {
 				return errors.Wrap(err, "getting hub client")
 			}
 
-			err = hubClient.Reboot(ctx)
+			id, err := hubClient.HubID(ctx)
 			if err != nil {
-				return errors.Wrap(err, "rebooting")
+				return errors.Wrap(err, "fetching")
 			}
 
-			cmdp.Logger.V(0).Info("requested reboot")
+			fmt.Fprintf(cmdp.Stdout, "%s\n", id)
 
 			return nil
 		},

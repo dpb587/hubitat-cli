@@ -7,6 +7,7 @@ import (
 	"github.com/dpb587/hubitat-cli/cmd/advancedcmd"
 	"github.com/dpb587/hubitat-cli/cmd/backupcmd"
 	"github.com/dpb587/hubitat-cli/cmd/cmdflags"
+	"github.com/dpb587/hubitat-cli/cmd/hubidcmd"
 	"github.com/dpb587/hubitat-cli/cmd/rebootcmd"
 	"github.com/spf13/cobra"
 )
@@ -30,6 +31,7 @@ func main() {
 
 	cmd.AddCommand(advancedcmd.New(cmdp))
 	cmd.AddCommand(backupcmd.New(cmdp))
+	cmd.AddCommand(hubidcmd.New(cmdp))
 	// cmd.AddCommand(curlcmd.New(cmdp))
 	cmd.AddCommand(rebootcmd.New(cmdp))
 
