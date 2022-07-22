@@ -46,10 +46,22 @@ $ hubitat-cli advanced certificate update \
   --private-key-path=/mnt/config/tls.key
 ```
 
-To manually reboot the hub you might use the following.
+To manually reboot the hub (and optionally `--follow` progress until it's back online):
 
 ```bash
-$ hubitat-cli reboot
+$ hubitat-cli reboot --follow
+```
+
+To check if updates are available:
+
+```bash
+$ hubitat-cli cloud check-for-update
+```
+
+To immediately apply an update (and optionally `--follow` progress until it's back online):
+
+```bash
+$ hubitat-cli cloud update-platform --follow
 ```
 
 If the CLI is erroring or not behaving as you expect, try enabling logging with the `-v` verbosity flag. If logs are unhelpful or you still have a concern, refer to them when searching and reporting a [project issue](https://github.com/dpb587/hubitat-cli/issues).

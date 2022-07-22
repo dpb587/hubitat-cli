@@ -6,6 +6,7 @@ import (
 
 	"github.com/dpb587/hubitat-cli/cmd/advancedcmd"
 	"github.com/dpb587/hubitat-cli/cmd/backupcmd"
+	"github.com/dpb587/hubitat-cli/cmd/cloudcmd"
 	"github.com/dpb587/hubitat-cli/cmd/cmdflags"
 	"github.com/dpb587/hubitat-cli/cmd/hubidcmd"
 	"github.com/dpb587/hubitat-cli/cmd/rebootcmd"
@@ -31,12 +32,23 @@ func main() {
 
 	cmd.AddCommand(advancedcmd.New(cmdp))
 	cmd.AddCommand(backupcmd.New(cmdp))
+	cmd.AddCommand(cloudcmd.New(cmdp))
 	cmd.AddCommand(hubidcmd.New(cmdp))
 	// cmd.AddCommand(curlcmd.New(cmdp))
 	cmd.AddCommand(rebootcmd.New(cmdp))
 
 	if err := cmd.Execute(); err != nil {
-		fmt.Printf("%s: error: %s\n", cmd.Use, err)
-		os.Exit(1)
+		var code = 1
+
+		if ee, ok := err.(cmdflags.ErrorCode); ok {
+			err = ee.Err
+			code = ee.Code
+		}
+
+		if err != nil {
+			fmt.Printf("%s: error: %s\n", cmd.Use, err)
+		}
+
+		os.Exit(code)
 	}
 }

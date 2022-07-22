@@ -2,6 +2,7 @@ package hub
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -70,4 +71,41 @@ func (c *Client) HubID(ctx context.Context) (string, error) {
 	c.log.V(1).Info("requested id")
 
 	return id, nil
+}
+
+type HubStatus struct {
+	Status               string `json:"status"`
+	ServerInitPercentage string `json:"serverInitPercentage"`
+	ServerInitDetails    string `json:"serverInitDetails"`
+}
+
+func (c *Client) HubStatus(ctx context.Context) (HubStatus, error) {
+	c.log.V(2).Info("requesting status")
+
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, "/hubStatus", nil)
+	if err != nil {
+		return HubStatus{}, errors.Wrap(err, "creating request")
+	}
+
+	res, err := c.Do(req)
+	if err != nil {
+		return HubStatus{}, errors.Wrap(err, "sending request")
+	} else if res.StatusCode != http.StatusOK {
+		if cerr := res.Body.Close(); cerr != nil {
+			c.log.Error(cerr, "closing errored response")
+		}
+
+		return HubStatus{}, fmt.Errorf("unexpected response status code: %d", res.StatusCode)
+	}
+
+	var meta HubStatus
+
+	err = json.NewDecoder(res.Body).Decode(&meta)
+	if err != nil {
+		return HubStatus{}, errors.Wrap(err, "decoding response")
+	}
+
+	c.log.V(1).Info("requested status")
+
+	return meta, nil
 }
