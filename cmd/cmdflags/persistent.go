@@ -122,17 +122,17 @@ func (p *Persistent) HubClient() (*hub.Client, error) {
 			p.Logger,
 			&http.Client{
 				Jar:     jar,
-				Timeout: 30 * time.Second,
+				Timeout: 60 * time.Second,
 				Transport: &http.Transport{
 					Dial: (&net.Dialer{
 						Timeout:   30 * time.Second,
 						KeepAlive: 30 * time.Second,
 					}).Dial,
-					IdleConnTimeout:       15 * time.Second,
+					IdleConnTimeout:       30 * time.Second,
 					TLSClientConfig:       tlsConfig,
-					TLSHandshakeTimeout:   15 * time.Second,
-					ResponseHeaderTimeout: 15 * time.Second,
-					ExpectContinueTimeout: 5 * time.Second,
+					TLSHandshakeTimeout:   30 * time.Second,
+					ResponseHeaderTimeout: 60 * time.Second,
+					ExpectContinueTimeout: 15 * time.Second,
 				},
 			},
 			hubURL,
